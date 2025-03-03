@@ -15,14 +15,28 @@ This is a Windows application that displays real time data from serial port. The
 - Exports to PNG
 - Exports to CSV
 - Autoscale to visible graph
+- Regular expression to extract numeric data from serial stream
+- Send command field to send serial commands to connected device
 
 ## Screenshot
 
+(Needs update)
 ![Serial Port Plotter screenshot](res/screen_0.png)
 
 ## How to use the application
 
-Just send your integer data over the serial port. The application expects certain format so it can differentiate between values. Each message you send must start with '$' and end with ';' (semi-colon) and the integers inside need to be space-separated. The Help button displays comprehensive instructions.
+Just send your integer data over the serial port. The application does not expect a certain format. The input data can be extracted with a regular expression from the serial data stream.
+For example to detect a set of 2 decimal numbers we can use the regex: `(\d+.\d*)[^1-9]*?(\d+.\d*)[^1-9]*?\n` 
+- This check for a number `(\d+.\d*)` (possibly containing a decimal dot),
+- a separator string `[^1-9]*?` that can be anything except a number (space for example)
+- and the second number `(\d+.\d*)`
+- than any characters except numbers + a linefeed `[^1-9]*?\n`
+
+To recognized number always use `()` groupings in regex. The software extracts all first layer groupings and uses those as input for plotting. (So do not use nested grouping).
+If data is recognized correctly it should show up as numbers separated by a space on the **Filtered data view**. It is recommended to check for a line feed as an end character for the
+regex in order to only find matches that are on the same line.
+
+The Help button displays usage instructions.
 
 Use the mouse wheel over controls to change its values and use it over plot area to zoom.
 
@@ -32,9 +46,11 @@ To enable the file saving, click on the document button before starting the plot
 
 Double click on a channel in the Graph Control panel to hide/show a specific channel.
 
+It is also possible to send serial commands to the device we are connected to. Just type the desired command into the **Serial command** field and press enter to send it.
+
 ![File Save Button](res/screen_1.png)
 
-## Send data over the serial port
+## Send data over the serial port from device
 
 ```c
 /* Example: Plot two values */
@@ -47,7 +63,18 @@ The software supports integer and decimal numbers ( float/double )
 
 ## Source
 
-Source and .pro file of the Qt Project are available. A standalone .exe is included for the people who do not want to build the source. Search for it at [releases](https://github.com/CieNTi/serial_port_plotter/releases)
+Source and .pro file of the Qt Project are available. A standalone Windows .exe is included for the people who do not want to build the source. Search for it at [releases](https://github.com/VitanovG/Regex_Serial_Plotter/releases/new)
+
+## Build on Windows
+
+- Install [Innosetup](https://jrsoftware.org/isdl.php) and add to Path
+- Install [Qt 5.12.0](https://download.qt.io/archive/qt/5.12/5.12.0/)
+- Add Qt/bin to path for the compiler in use (MingW)
+- git clone https://github.com/ColinDuquesnoy/QDarkStyleSheet into "Regex_Serial_Plotter/res/qdark_stylesheet"
+- Open project in Qt creator and Build Release
+- Find build folder and copy "release" dir to "Regex_Serial_Plotter/build"
+- Run make_installer.bat (this will package the .dlls into an installer at Regex_Serial_Plotter/build/installer/*.exe)
+- Install the application
 
 ## Credits
 
@@ -57,11 +84,25 @@ Source and .pro file of the Qt Project are available. A standalone .exe is inclu
 - [Changelog](http://keepachangelog.com/)
 - Base of this software by [CieNTi](https://github.com/CieNTi)
 - CSV export by [HackInventOrg](https://github.com/HackInventOrg)
+- Regex and serial command field implemented by [VitanovG](https://github.com/VitanovG)
 
 ## Changelog
 
 All notable changes to this project will be documented below this line.
 This project adheres to [Semantic Versioning](http://semver.org/).
+
+## [1.4.0] - 2025-03-03
+
+### Info
+
+- Build with QT 5.12.0
+- Reworked serial stream readin to prevent cutting up lines in Incoming Data Field
+
+### Added
+
+- Regex field to enable reading serial data in any format
+- Serial command field for sending serial commands to connected device
+- Instructions on how to build
 
 ## [1.3.0] - 2018-08-01
 
