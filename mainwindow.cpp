@@ -81,6 +81,9 @@ MainWindow::MainWindow (QWidget *parent) :
   /* Setup plot area and connect controls slots */
   setupPlot();
 
+  /* Keypress on commandTextBox */
+  connect (ui->commandTextBox, SIGNAL(textChanged()), this, SLOT(on_command_key_event()));
+
   /* Wheel over plot when plotting */
   connect (ui->plot, SIGNAL (mouseWheel (QWheelEvent*)), this, SLOT (on_mouse_wheel_in_plot (QWheelEvent*)));
 
@@ -471,50 +474,54 @@ void MainWindow::on_spinAxesMax_valueChanged(int arg1)
 /** ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
 /**
+ * @brief Send data to serial port
+ */
+void MainWindow::on_command_key_event(){
+    QString data = ui->commandTextBox->toPlainText();
+    if(data.endsWith("\n")){
+        data.replace("\n","\r\n");
+        QByteArray temp = data.toLocal8Bit();
+        serialPort->write(temp);
+        serialPort->flush();
+        //serialPort->waitForBytesWritten(100);
+        ui->commandTextBox->clear();
+    }
+}
+
+/**
  * @brief Read data for inside serial port
  */
 void MainWindow::readData()
 {
     if(serialPort->bytesAvailable()) {                                                    // If any bytes are available
         QByteArray data = serialPort->readAll();                                          // Read all data in QByteArray
-
         if(!data.isEmpty()) {                                                             // If the byte array is not empty
             char *temp = data.data();                                                     // Get a '\0'-terminated char* to the data
-
+            instreamS += std::string(temp);
             if (!filterDisplayedData){
-                ui->textEdit_UartWindow->append(data);
+                ui->textEdit_UartWindow->moveCursor (QTextCursor::End);
+                ui->textEdit_UartWindow->insertPlainText(data);
             }
-            for(int i = 0; temp[i] != '\0'; i++) {                                        // Iterate over the char*
-                switch(STATE) {                                                           // Switch the current state of the message
-                case WAIT_START:                                                          // If waiting for start [$], examine each char
-                    if(temp[i] == START_MSG) {                                            // If the char is $, change STATE to IN_MESSAGE
-                        STATE = IN_MESSAGE;
-                        receivedData.clear();                                             // Clear temporary QString that holds the message
-                        break;                                                            // Break out of the switch
+            std::string regex_str = ui->regexTextBox->toPlainText().toStdString();
+            if (regex_str != ""){
+                std::regex r_template(regex_str);
+                std::smatch m;
+                while (regex_search(instreamS, m, r_template)) {
+                    QStringList incomingData;
+                    for (size_t i = 1; i < m.size(); i++) {                                     // Split string received from port and put it into list
+                      incomingData.append(QString::fromStdString(m[i].str()));
                     }
-                    break;
-                case IN_MESSAGE:                                                          // If state is IN_MESSAGE
-                    if(temp[i] == END_MSG) {                                              // If char examined is ;, switch state to END_MSG
-                        STATE = WAIT_START;
-                        QStringList incomingData = receivedData.split(' ');               // Split string received from port and put it into list
-                        if(filterDisplayedData){
-                            ui->textEdit_UartWindow->append(receivedData);
-                        }
-                        emit newData(incomingData);                                       // Emit signal for data received with the list
-                        break;
+                    if(filterDisplayedData){
+                      ui->textEdit_UartWindow->append(incomingData.join(" "));
                     }
-                    else if (isdigit (temp[i]) || isspace (temp[i]) || temp[i] =='-' || temp[i] =='.')
-                      {
-                        /* If examined char is a digit, and not '$' or ';', append it to temporary string */
-                        receivedData.append(temp[i]);
-                      }
-                    break;
-                default: break;
+                    emit newData(incomingData);
+                    instreamS = m.suffix();
                 }
             }
         }
     }
 }
+
 /** ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
 /**

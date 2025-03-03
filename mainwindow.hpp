@@ -30,6 +30,7 @@
 #include <QMainWindow>
 #include <QtSerialPort/QtSerialPort>
 #include <QSerialPortInfo>
+#include <regex>
 #include "helpwindow.hpp"
 #include "qcustomplot/qcustomplot.h"
 
@@ -66,12 +67,13 @@ private slots:
     void on_spinAxesMin_valueChanged(int arg1);                                           // Changing lower limit for the plot
     void on_spinAxesMax_valueChanged(int arg1);                                           // Changing upper limit for the plot
     void readData();                                                                      // Slot for inside serial port
-    //void on_comboAxes_currentIndexChanged(int index);                                     // Display number of axes and colors in status bar
+    //void on_comboAxes_currentIndexChanged(int index);                                    // Display number of axes and colors in status bar
     void on_spinYStep_valueChanged(int arg1);                                             // Spin box for changing Y axis tick step
     void on_savePNGButton_clicked();                                                      // Button for saving JPG
     void onMouseMoveInPlot (QMouseEvent *event);                                          // Displays coordinates of mouse pointer when clicked in plot in status bar
     void on_spinPoints_valueChanged (int arg1);                                           // Spin box controls how many data points are collected and displayed
     void on_mouse_wheel_in_plot (QWheelEvent *event);                                     // Makes wheel mouse works while plotting
+    void on_command_key_event();                                                          // Catches keypress to send on Enter
 
     /* Used when a channel is selected (plot or legend) */
     void channel_selection (void);
@@ -83,17 +85,12 @@ private slots:
     void on_actionPause_Plot_triggered();
     void on_actionClear_triggered();
     void on_actionRecord_stream_triggered();
-
     void on_pushButton_TextEditHide_clicked();
-
     void on_pushButton_ShowallData_clicked();
-
     void on_pushButton_AutoScale_clicked();
-
     void on_pushButton_ResetVisible_clicked();
 
     void on_listWidget_Channels_itemDoubleClicked(QListWidgetItem *item);
-
     void on_pushButton_clicked();
 
 signals:
@@ -121,6 +118,9 @@ private:
 
     /* Textbox Related */
     bool filterDisplayedData = true;
+
+    /*Store incoming COM data stream*/
+    std::string instreamS = "";
 
     /* Listview Related */
     QStringListModel *channelListModel;
