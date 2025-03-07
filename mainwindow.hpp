@@ -28,6 +28,7 @@
 #define MAINWINDOW_HPP
 
 #include <QMainWindow>
+#include <QFileDialog>
 #include <QtSerialPort/QtSerialPort>
 #include <QSerialPortInfo>
 #include <regex>

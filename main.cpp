@@ -21,7 +21,7 @@
 ****************************************************************************
 **           Author: Borislav                                             **
 **           Contact: b.kereziev@gmail.com                                **
-**           Date: 29.12.14                                               **
+**           Date: 29.12.2014                                             **
 ****************************************************************************/
 
 #include "mainwindow.hpp"
@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
     MainWindow w;
     QIcon appIcon(":/serial_port_plotter/icons/serial_port_icon.icns");
     w.setWindowIcon(appIcon);
-    w.setWindowTitle("Serial Port Plotter v1.4.0");
+    w.setWindowTitle("Serial Port Plotter v1.5.0");
     w.show();
 
     return a.exec();

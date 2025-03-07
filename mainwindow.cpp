@@ -127,7 +127,7 @@ void MainWindow::createUI()
       {
         enable_com_controls (false);
         ui->statusBar->showMessage ("No ports detected.");
-        ui->savePNGButton->setEnabled (false);
+        //ui->savePNGButton->setEnabled (false);
         return;
       }
 
@@ -309,7 +309,7 @@ void MainWindow::onPortClosed()
     plotting = false;
     
     //--
-    closeCsvFile();
+    //closeCsvFile();
     
     disconnect (serialPort, SIGNAL(readyRead()), this, SLOT(readData()));
     disconnect (this, SIGNAL(portOpenOK()), this, SLOT(portOpenedSuccess()));             // Disconnect port signals to GUI slots
@@ -345,10 +345,10 @@ void MainWindow::portOpenedSuccess()
     if(ui->actionRecord_stream->isChecked())
     {
         //--> Create new CSV file with current date/timestamp
-        openCsvFile();
+        //openCsvFile();
     }
     /* Lock the save option while recording */
-    ui->actionRecord_stream->setEnabled(false);
+    //ui->actionRecord_stream->setEnabled(false);
 
     updateTimer.start (20);                                                                // Slot is refreshed 20 times per second
     connected = true;                                                                      // Set flags
@@ -557,7 +557,7 @@ void MainWindow::on_spinYStep_valueChanged(int arg1)
  */
 void MainWindow::on_savePNGButton_clicked()
 {
-    ui->plot->savePng (QString::number(dataPointNumber) + ".png", 1920, 1080, 2, 50);
+    ui->plot->savePng(QFileDialog::getSaveFileName(this,tr("Specify save file name for data"), "untitled.png", tr("PNG (*.png)")), 1920, 1080, 2, 100);
 }
 /** ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
@@ -759,13 +759,14 @@ void MainWindow::on_actionPause_Plot_triggered()
  */
 void MainWindow::on_actionRecord_stream_triggered()
 {
-    if (ui->actionRecord_stream->isChecked())
-    {
+    if (ui->actionRecord_stream->isChecked()) {
+      m_csvFile = new QFile(QFileDialog::getSaveFileName(this, tr("Specify save file name for data"), "untitled.csv", tr("CSV (*.csv)"),nullptr,QFileDialog::DontConfirmOverwrite));
       ui->statusBar->showMessage ("Data will be stored in csv file");
+      openCsvFile();
     }
-    else
-    {
+    else {
       ui->statusBar->showMessage ("Data will not be stored anymore");
+      closeCsvFile();
     }
 }
 /** ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
@@ -790,10 +791,9 @@ void MainWindow::on_actionDisconnect_triggered()
       plotting = false;                                                                 // Not plotting anymore
       ui->actionPause_Plot->setEnabled (false);
       ui->actionDisconnect->setEnabled (false);
-      ui->actionRecord_stream->setEnabled(true);
+      //ui->actionRecord_stream->setEnabled(true);
+      //ui->savePNGButton->setEnabled (false);
       receivedData.clear();                                                             // Clear received string
-
-      ui->savePNGButton->setEnabled (false);
       enable_com_controls (true);
     }
 }
@@ -821,12 +821,10 @@ void MainWindow::on_actionClear_triggered()
  */
 void MainWindow::openCsvFile(void)
 {
-  m_csvFile = new QFile(QDateTime::currentDateTime().toString("yyyy-MM-d-HH-mm-ss-")+"data-out.csv");
   if(!m_csvFile)
       return;
-  if (!m_csvFile->open(QIODevice::ReadWrite | QIODevice::Text))
+  if (!m_csvFile->open(QIODevice::Append | QIODevice::Text)) //Append
         return;
-  
 }
 /** ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 

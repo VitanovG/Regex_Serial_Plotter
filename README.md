@@ -34,15 +34,15 @@ For example to detect a set of 2 decimal numbers we can use the regex: `(\d+.\d*
 
 To recognized number always use `()` groupings in regex. The software extracts all first layer groupings and uses those as input for plotting. (So do not use nested grouping).
 If data is recognized correctly it should show up as numbers separated by a space on the **Filtered data view**. It is recommended to check for a line feed as an end character for the
-regex in order to only find matches that are on the same line.
+regex in order to only find matches that are on the same line. It is suggested to paste a complete regular expression into the regex field and not edit in in-situ in order to avoid strange behaviour.
 
 The Help button displays usage instructions.
 
 Use the mouse wheel over controls to change its values and use it over plot area to zoom.
 
-When stopped/paused, plot area can be dragged and file saving can be enabled.
+When stopped/paused, plot area can be dragged.
 
-To enable the file saving, click on the document button before starting the plot.
+To enable the file saving, click on the document button. The data is saved when it comes in on serial so any data that came in before pressing the document icon is not saveable to a .csv file. (Only as a .png)
 
 Double click on a channel in the Graph Control panel to hide/show a specific channel.
 
@@ -90,6 +90,18 @@ Source and .pro file of the Qt Project are available. A standalone Windows .exe 
 
 All notable changes to this project will be documented below this line.
 This project adheres to [Semantic Versioning](http://semver.org/).
+
+## [1.5.0] - 2025-03-07
+
+### Info
+
+- Build with QT 5.12.0
+- Updated helpwindow
+- Added minimum size requirements for most of the buttons
+
+### Added
+
+- Added file dialog to buttons that save data in .csv and .png
 
 ## [1.4.0] - 2025-03-03
 
@@ -191,6 +203,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - PNG *WITH* transparency
 - Separate `receive_data` from `process_data` to allow non-throttled operations
 
+[1.5.0]: https://github.com/VitanovG/Regex_Serial_Plotter/releases/tag/v1.5.0
 [1.4.0]: https://github.com/VitanovG/Regex_Serial_Plotter/releases/tag/v1.4.0
 [1.3.0]: https://github.com/Eriobis/serial_port_plotter/releases/tag/v1.3.0
 [1.2.2]: https://github.com/Eriobis/serial_port_plotter/releases/tag/v1.2.2
