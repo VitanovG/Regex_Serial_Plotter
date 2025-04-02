@@ -131,7 +131,12 @@ private:
     QFile* m_csvFile = nullptr;
     void openCsvFile(void);
     void closeCsvFile(void);
+    void readSettingsFile();
+    void writeSettingsFile();
 
+	std::chrono::time_point<std::chrono::steady_clock> start_time;  // Measurement start time, counted from Port open
+    std::chrono::duration<double> data_time;                        // Time between start time and current time
+	
     QTimer updateTimer;                                                                   // Timer used for replotting the plot
     QTime timeOfFirstData;                                                                // Record the time of the first data point
     double timeBetweenSamples;                                                            // Store time between samples

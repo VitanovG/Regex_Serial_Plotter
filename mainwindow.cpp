@@ -97,6 +97,7 @@ MainWindow::MainWindow (QWidget *parent) :
   /* Connect update timer to replot slot */
   connect (&updateTimer, SIGNAL (timeout()), this, SLOT (replot()));
 
+  readSettingsFile();
   m_csvFile = nullptr;
 }
 
@@ -108,6 +109,7 @@ MainWindow::MainWindow (QWidget *parent) :
 MainWindow::~MainWindow()
 {
     closeCsvFile();
+    writeSettingsFile();
       
     if (serialPort != nullptr)
       {
@@ -350,6 +352,7 @@ void MainWindow::portOpenedSuccess()
     /* Lock the save option while recording */
     //ui->actionRecord_stream->setEnabled(false);
 
+    start_time = std::chrono::steady_clock::now();                                         // Start time of measurement
     updateTimer.start (20);                                                                // Slot is refreshed 20 times per second
     connected = true;                                                                      // Set flags
     plotting = true;
@@ -495,6 +498,7 @@ void MainWindow::readData()
 {
     if(serialPort->bytesAvailable()) {                                                    // If any bytes are available
         QByteArray data = serialPort->readAll();                                          // Read all data in QByteArray
+        data_time = std::chrono::steady_clock::now() - start_time;   					  // time of data point
         if(!data.isEmpty()) {                                                             // If the byte array is not empty
             char *temp = data.data();                                                     // Get a '\0'-terminated char* to the data
             instreamS += std::string(temp);
@@ -508,9 +512,10 @@ void MainWindow::readData()
                 std::smatch m;
                 while (regex_search(instreamS, m, r_template)) {
                     QStringList incomingData;
-                    for (size_t i = 1; i < m.size(); i++) {                                     // Split string received from port and put it into list
-                      incomingData.append(QString::fromStdString(m[i].str()));
-                    }
+                    // Add timestamp
+                    if (m.size() > 0) { incomingData.append(QString::number(data_time.count(), 'f', 3)); }
+                    // Split string received from port and put it into list
+                    for (size_t i = 1; i < m.size(); i++) { incomingData.append(QString::fromStdString(m[i].str())); }
                     if(filterDisplayedData){
                       ui->textEdit_UartWindow->append(incomingData.join(" "));
                     }
@@ -930,4 +935,88 @@ void MainWindow::on_pushButton_clicked()
     {
         ui->comboPort->addItem (port.portName());
     }
+}
+
+/**
+ * @brief Reads the file serialUI_settings.dat line by line
+ */
+void MainWindow::readSettingsFile() {
+    QFile settingsFile("serialUI_settings.dat");
+    if (!settingsFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        qDebug() << "Failed to open serialUI_settings.dat";
+        return;
+    }
+
+    QTextStream in(&settingsFile);
+    while (!in.atEnd()) {
+        QString line = in.readLine();
+        QStringList line_data = line.split(" ");
+        if(line_data.size() == 2)
+        {
+            if(line_data[0] == "port") {
+                ui->comboPort->setCurrentText(line_data[1]);
+            }
+            else if(line_data[0] == "baudrate") {
+                ui->comboBaud->setCurrentText(line_data[1]);
+            }
+            else if(line_data[0] == "databits") {
+                ui->comboData->setCurrentText(line_data[1]);
+            }
+            else if(line_data[0] == "parity") {
+                ui->comboParity->setCurrentText(line_data[1]);
+            }
+            else if(line_data[0] == "stopbits"){
+                ui->comboStop->setCurrentText(line_data[1]);
+            }
+            else if(line_data[0] == "regex"){
+                ui->regexTextBox->setPlainText(line_data[1]);
+            }
+            else if(line_data[0] == "filterDisplayedData"){
+                ui->pushButton_ShowallData->setChecked(line_data[1].toInt());
+            }
+            else if(line_data[0] == "showTextEdit"){
+                ui->pushButton_TextEditHide->setChecked(line_data[1].toInt());
+            }
+            else if(line_data[0] == "points"){
+                ui->spinPoints->setValue(line_data[1].toInt());
+            }
+            else if(line_data[0] == "axesMin"){
+                ui->spinAxesMin->setValue(line_data[1].toInt());
+            }
+            else if(line_data[0] == "axesMax"){
+                ui->spinAxesMax->setValue(line_data[1].toInt());
+            }
+            else if(line_data[0] == "yStep"){
+                ui->spinYStep->setValue(line_data[1].toInt());
+            } 
+        }
+    }
+    settingsFile.close();
+}
+
+/**
+ * @brief Writes the current settings to serialUI_settings.dat
+ */
+void MainWindow::writeSettingsFile() {
+    QFile settingsFile("serialUI_settings.dat");
+    if (!settingsFile.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        qDebug() << "Failed to open serialUI_settings.dat for writing";
+        return;
+    }
+
+    QTextStream out(&settingsFile);
+    out << "port " << ui->comboPort->currentText() << "\n";
+    out << "baudrate " << ui->comboBaud->currentText() << "\n";
+    out << "databits " << ui->comboData->currentText() << "\n";
+    out << "parity " << ui->comboParity->currentText() << "\n";
+    out << "stopbits " << ui->comboStop->currentText() << "\n";
+    out << "regex " << ui->regexTextBox->toPlainText() << "\n";
+    out << "filterDisplayedData " << (filterDisplayedData ? 1 : 0) << "\n";
+    out << "showTextEdit " << (ui->pushButton_TextEditHide->isChecked() ? 1 : 0) << "\n";
+    out << "points " << ui->spinPoints->value() << "\n";
+    out << "axesMin " << ui->spinAxesMin->value() << "\n";
+    out << "axesMax " << ui->spinAxesMax->value() << "\n";
+    out << "yStep " << ui->spinYStep->value() << "\n";
+
+    settingsFile.close();
 }

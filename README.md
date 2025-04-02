@@ -71,8 +71,10 @@ Source and .pro file of the Qt Project are available. A standalone Windows .exe 
 - Install [Qt 5.12.0](https://download.qt.io/archive/qt/5.12/5.12.0/)
 - Add Qt/bin to path for the compiler in use (MingW)
 - git clone https://github.com/ColinDuquesnoy/QDarkStyleSheet into "Regex_Serial_Plotter/res/qdark_stylesheet"
+- Delete IconCache.db from Appdata/Local (Only if icon changed but not showing because of windows bug)
 - Open project in Qt creator and Build Release
 - Find build folder and copy "release" dir to "Regex_Serial_Plotter/build"
+- Edit the installer.iss to include the correct version numbering
 - Run make_installer.bat (this will package the .dlls into an installer at Regex_Serial_Plotter/build/installer/*.exe)
 - Install the application
 
@@ -90,6 +92,19 @@ Source and .pro file of the Qt Project are available. A standalone Windows .exe 
 
 All notable changes to this project will be documented below this line.
 This project adheres to [Semantic Versioning](http://semver.org/).
+
+## [1.6.0] - 2025-04-02
+
+### Info
+
+- Build with QT 5.12.0
+- Updated helpwindow
+- New icon
+
+### Added
+
+- Added timestamps to all incoming data. (Plotting is still by data points, not time)
+- Added a serialUI_settings.dat file that stores all settings from the application when closing it, upon opening the application again these settings are applied by default.
 
 ## [1.5.0] - 2025-03-07
 
@@ -203,6 +218,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - PNG *WITH* transparency
 - Separate `receive_data` from `process_data` to allow non-throttled operations
 
+[1.6.0]: https://github.com/VitanovG/Regex_Serial_Plotter/releases/tag/v1.6.0
 [1.5.0]: https://github.com/VitanovG/Regex_Serial_Plotter/releases/tag/v1.5.0
 [1.4.0]: https://github.com/VitanovG/Regex_Serial_Plotter/releases/tag/v1.4.0
 [1.3.0]: https://github.com/Eriobis/serial_port_plotter/releases/tag/v1.3.0
