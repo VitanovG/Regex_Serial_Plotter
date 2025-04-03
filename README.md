@@ -63,7 +63,7 @@ The software supports integer and decimal numbers ( float/double )
 
 ## Source
 
-Source and .pro file of the Qt Project are available. A standalone Windows .exe is included for the people who do not want to build the source. Search for it at [releases](https://github.com/VitanovG/Regex_Serial_Plotter/releases/new)
+Source and .pro file of the Qt Project are available. A standalone Windows .exe is included for the people who do not want to build the source. Search for it at [releases](https://github.com/VitanovG/Regex_Serial_Plotter/releases)
 
 ## Build on Windows
 
