@@ -93,6 +93,19 @@ Source and .pro file of the Qt Project are available. A standalone Windows .exe 
 All notable changes to this project will be documented below this line.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.7.0] - 2025-07-15
+
+### Info
+
+- Build with QT 5.12.0
+- Serial ports are now refreshed every time the port selection is clicked
+- The serial connection gets initialized first with correct data, and opened only later
+- Changed code syntax to newer (SIGNAL() or SLOT() not used anymore)
+
+### Added
+
+- Added a command history, use Up or Down arrow keys in command textbox
+
 ## [1.6.0] - 2025-04-02
 
 ### Info
@@ -218,6 +231,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - PNG *WITH* transparency
 - Separate `receive_data` from `process_data` to allow non-throttled operations
 
+[1.7.0]: https://github.com/VitanovG/Regex_Serial_Plotter/releases/tag/v1.7.0
 [1.6.0]: https://github.com/VitanovG/Regex_Serial_Plotter/releases/tag/v1.6.0
 [1.5.0]: https://github.com/VitanovG/Regex_Serial_Plotter/releases/tag/v1.5.0
 [1.4.0]: https://github.com/VitanovG/Regex_Serial_Plotter/releases/tag/v1.4.0
