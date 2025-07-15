@@ -63,14 +63,14 @@ The software supports integer and decimal numbers ( float/double )
 
 ## Source
 
-Source and .pro file of the Qt Project are available. A standalone Windows .exe is included for the people who do not want to build the source. Search for it at [releases](https://github.com/VitanovG/Regex_Serial_Plotter/releases/new)
+Source and .pro file of the Qt Project are available. A standalone Windows .exe is included for the people who do not want to build the source. Search for it at [releases](https://github.com/VitanovG/Regex_Serial_Plotter/releases)
 
 ## Build on Windows
 
 - Install [Innosetup](https://jrsoftware.org/isdl.php) and add to Path
 - Install [Qt 5.12.0](https://download.qt.io/archive/qt/5.12/5.12.0/)
 - Add Qt/bin to path for the compiler in use (MingW)
-- git clone https://github.com/ColinDuquesnoy/QDarkStyleSheet into "Regex_Serial_Plotter/res/qdark_stylesheet"
+- git clone https://github.com/ColinDuquesnoy/QDarkStyleSheet into "Regex_Serial_Plotter/res/QDarkStyleSheet"
 - Delete IconCache.db from Appdata/Local (Only if icon changed but not showing because of windows bug)
 - Open project in Qt creator and Build Release
 - Find build folder and copy "release" dir to "Regex_Serial_Plotter/build"
@@ -92,6 +92,19 @@ Source and .pro file of the Qt Project are available. A standalone Windows .exe 
 
 All notable changes to this project will be documented below this line.
 This project adheres to [Semantic Versioning](http://semver.org/).
+
+## [1.7.0] - 2025-07-15
+
+### Info
+
+- Build with QT 5.12.0
+- Serial ports are now refreshed every time the port selection is clicked
+- The serial connection gets initialized first with correct data, and opened only later
+- Changed code syntax to newer (SIGNAL() or SLOT() not used anymore)
+
+### Added
+
+- Added a command history, use Up or Down arrow keys in command textbox
 
 ## [1.6.0] - 2025-04-02
 
@@ -218,6 +231,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - PNG *WITH* transparency
 - Separate `receive_data` from `process_data` to allow non-throttled operations
 
+[1.7.0]: https://github.com/VitanovG/Regex_Serial_Plotter/releases/tag/v1.7.0
 [1.6.0]: https://github.com/VitanovG/Regex_Serial_Plotter/releases/tag/v1.6.0
 [1.5.0]: https://github.com/VitanovG/Regex_Serial_Plotter/releases/tag/v1.5.0
 [1.4.0]: https://github.com/VitanovG/Regex_Serial_Plotter/releases/tag/v1.4.0

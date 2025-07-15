@@ -24,27 +24,27 @@
 **           Date: 29.12.2014                                             **
 ****************************************************************************/
 
-#include "mainwindow.hpp"
 #include <QApplication>
 
-int main(int argc, char *argv[])
-{
-    QApplication a(argc, argv);
+#include "mainwindow.hpp"
 
-    /* Apply style sheet */
-    QFile file(":/serial_port_plotter/styles/style.qss");
-    if(file.open(QIODevice::ReadOnly | QIODevice::Text))
-      {
-        a.setStyleSheet(file.readAll());
-        file.close();
-      }
 
-    /* Get the icon for the window corner */
-    MainWindow w;
-    QIcon appIcon(":/serial_port_plotter/icons/serial_port_icon.icns");
-    w.setWindowIcon(appIcon);
-    w.setWindowTitle("Serial Port Plotter v1.6.0");
-    w.show();
+int main(int argc, char *argv[]) {
+  QApplication a(argc, argv);
 
-    return a.exec();
+  /* Apply style sheet */
+  QFile file(":/serial_port_plotter/styles/style.qss");
+  if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+    a.setStyleSheet(file.readAll());
+    file.close();
+  }
+
+  /* Get the icon for the window corner */
+  MainWindow w;
+  QIcon appIcon(":/serial_port_plotter/icons/serial_port_icon.icns");
+  w.setWindowIcon(appIcon);
+  w.setWindowTitle("Serial Port Plotter v1.7.0");
+  w.show();
+
+  return a.exec();
 }

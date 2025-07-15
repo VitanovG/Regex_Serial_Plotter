@@ -28,7 +28,7 @@ FORMS    += mainwindow.ui \
 
 RESOURCES += \
     res/serial_port_plotter.qrc \
-    res/qdark_stylesheet/qdarkstyle/dark/darkstyle.qrc
+    res/QDarkStyleSheet/qdarkstyle/dark/darkstyle.qrc
 
 # The following line compiles on Release but not on Debug, so this workaroung is used:
 RC_FILE = res/serial_port_plotter.rc

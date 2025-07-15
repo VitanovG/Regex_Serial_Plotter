@@ -11,13 +11,17 @@ set exe_path=.\build\release\serial_port_plotter.exe
 echo    Dependencies folder = %deps_folder%
 echo    Main EXE path = %exe_path%
 echo.
-echo 2. Creating dependencies folder
+echo 2. Cleanig build/installer folder
+del /F /Q build/installer
+echo.
+echo 3. Creating dependencies folder
 echo    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 windeployqt --dir %deps_folder% --compiler-runtime %exe_path%
 echo.
-echo 3. Compiling installer
+set /p compile-version=Provide .exe version (x.y.z): 
+echo 4. Compiling installer
 echo    ~~~~~~~~~~~~~~~~~~~
-iscc installer.iss
+iscc /DMyAppVersion="%compile-version%" installer.iss 
 echo.
 echo Finished!
 

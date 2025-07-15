@@ -2,7 +2,9 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Serial Port Plotter"
-#define MyAppVersion "1.6.0"
+#ifndef MyAppVersion
+#define MyAppVersion "0.0.0"
+#endif
 #define MyAppPublisher "VitanovG"
 #define MyAppURL "https://github.com/VitanovG/serial_port_plotter"
 #define MyAppExeName "serial_port_plotter.exe"
