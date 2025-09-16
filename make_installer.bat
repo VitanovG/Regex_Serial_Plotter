@@ -18,6 +18,8 @@ echo 3. Creating dependencies folder
 echo    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 windeployqt --dir %deps_folder% --compiler-runtime %exe_path%
 echo.
+echo Now compy the missing dll files into build/release/deps folder
+echo.
 set /p compile-version=Provide .exe version (x.y.z): 
 echo 4. Compiling installer
 echo    ~~~~~~~~~~~~~~~~~~~
